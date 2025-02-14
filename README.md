@@ -1,9 +1,5 @@
 # ai-tools
 
-## インストール方法
-
-このリポジトリをクローンし、仮想環境を作成した後、必要なパッケージをインストールしてください。
-
 # リポジトリをクローン
 git clone https://github.com/yuki03040304/ai-tools.git
 cd ai-tools
