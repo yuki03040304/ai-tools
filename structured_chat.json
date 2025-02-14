@@ -1,0 +1,52 @@
+{
+    "family": [
+        {
+            "name": "山田花子",
+            "relation": "母",
+            "details": {
+                "age": "45",
+                "occupation": "教師",
+                "hobbies": [
+                    "ガーデニング",
+                    "読書"
+                ]
+            }
+        },
+        {
+            "name": "山田太郎",
+            "relation": "父",
+            "details": {
+                "age": "50",
+                "occupation": "エンジニア",
+                "hobbies": [
+                    "釣り",
+                    "映画鑑賞"
+                ]
+            }
+        },
+        {
+            "name": "山田一郎",
+            "relation": "子供",
+            "details": {
+                "age": "16",
+                "occupation": "高校生",
+                "hobbies": [
+                    "サッカー",
+                    "ゲーム"
+                ]
+            }
+        },
+        {
+            "name": "山田二郎",
+            "relation": "子供",
+            "details": {
+                "age": "12",
+                "occupation": "小学生",
+                "hobbies": [
+                    "アニメ",
+                    "絵画"
+                ]
+            }
+        }
+    ]
+}
