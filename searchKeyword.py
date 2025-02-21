@@ -7,10 +7,6 @@ from google.ads.googleads.errors import GoogleAdsException
 from dotenv import load_dotenv
 
 def get_next_filename():
-    """
-    既存の"kewwoard_ideas*.csv"ファイルを検索し、
-    インクリメントされたファイル名を生成します。
-    """
     files = glob.glob("kewwoard_ideas*.csv")
     max_num = 0
     for f in files:
@@ -23,10 +19,7 @@ def get_next_filename():
     return f"kewwoard_ideas{max_num + 1}.csv"
 
 def main(keyword, max_results, location, language):
-    # .envファイルから環境変数を読み込む
     load_dotenv()
-
-    # 必要な環境変数を取得（存在しない場合はKeyErrorとなります）
     developer_token = os.environ["DEVELOPER_TOKEN"]
     client_id = os.environ["CLIENT_ID"]
     client_secret = os.environ["CLIENT_SECRET"]
@@ -34,7 +27,6 @@ def main(keyword, max_results, location, language):
     login_customer_id = os.environ["LOGIN_CUSTOMER_ID"]
     customer_id = os.environ["CUSTOMER_ID"]
 
-    # GoogleAdsClientの設定を辞書形式で定義
     config = {
         "developer_token": developer_token,
         "client_id": client_id,
@@ -44,24 +36,19 @@ def main(keyword, max_results, location, language):
         "use_proto_plus": True,
     }
 
-    # Google Ads APIクライアントの初期化
     client = GoogleAdsClient.load_from_dict(config)
 
-    # サービスの取得
     keyword_plan_idea_service = client.get_service("KeywordPlanIdeaService")
     google_ads_service = client.get_service("GoogleAdsService")
-
-    # 言語と地域の定数を取得（デフォルトは日本）
     language_constant = google_ads_service.language_constant_path(language)
     geo_target_constant = google_ads_service.geo_target_constant_path(location)
 
-    # リクエストの組み立て
     request = client.get_type("GenerateKeywordIdeasRequest")
     request.customer_id = customer_id
     request.language = language_constant
     request.geo_target_constants.append(geo_target_constant)
     request.keyword_seed.keywords.append(keyword)
-    request.page_size = max_results  # 1ページあたりの取得件数を指定
+    request.page_size = max_results  
 
     try:
         response = keyword_plan_idea_service.generate_keyword_ideas(request=request)
@@ -81,32 +68,23 @@ def main(keyword, max_results, location, language):
                 results.append([idea.text, avg_searches, competition, low_bid, high_bid])
             count += 1
 
-        # ヘッダーの定義
         header = ["KW", "月間平均検索数", "競合性", "下限入札額", "上限入札額"]
         all_rows = [header] + results
 
-        # 各列の最大幅を計算（全てのセルの文字列長の最大値）
         col_widths = []
         for col in range(len(header)):
             max_width = max(len(str(row[col])) if row[col] is not None else 4 for row in all_rows)
             col_widths.append(max_width)
 
-        # 列ごとのアライメント設定（例：文字列は左寄せ、数値は右寄せ）
-        # KW, 競合性 は左寄せ、その他の数値は右寄せ
         alignments = ["<", ">", "<", ">", ">"]
-
-        # 出力ファイル名の生成
         output_filename = get_next_filename()
 
         with open(output_filename, mode="w", encoding="utf-8") as file:
-            # ヘッダー行の作成
             header_line = " | ".join(f"{str(cell):{align}{width}}"
                                      for cell, align, width in zip(header, alignments, col_widths))
             file.write(header_line + "\n")
-            # 区切り線（各列の幅分のハイフンを配置）
             separator_line = "-+-".join("-" * width for width in col_widths)
             file.write(separator_line + "\n")
-            # データ行の作成
             for row in results:
                 formatted_row = []
                 for cell in row:
